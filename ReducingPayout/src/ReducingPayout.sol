@@ -18,6 +18,10 @@ contract ReducingPayout {
     }
 
     function withdraw() public {
-        // your code here
+        uint256 delta = block.timestamp - depositedTime;
+        uint256 amount = delta < 1 days ? 1 ether - ((delta * 0.0011574 ether) / 100) : 0;
+
+        (bool ok, ) = payable(msg.sender).call{value: amount}("");
+        require(ok, "withdraw failed");
     }
 }

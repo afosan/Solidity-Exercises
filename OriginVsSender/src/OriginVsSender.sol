@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.13;
 
-contract OriginVsSender {
+import "forge-std/Test.sol";
+
+contract OriginVsSender is Test {
     /**
      *
      * TIP: Only an EOA(externally owned account i.e an address with a private key and public key) can initiate a transaction
@@ -17,5 +19,8 @@ contract OriginVsSender {
 
     function setNumber(uint256 num) external {
         /// your code here
+        console.log(msg.sender, tx.origin);
+        require(msg.sender == tx.origin, "not an EOA");
+        number = num;
     }
 }

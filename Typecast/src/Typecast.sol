@@ -8,5 +8,6 @@ contract Typecast {
 
     function typeCast() external payable {
         // your code here
+        require(msg.value == uint256(uint160(address(this))));
     }
 }

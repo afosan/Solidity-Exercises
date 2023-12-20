@@ -22,4 +22,29 @@ contract Stack {
     }
 
     // your code here
+    function push(uint256 newValue) public {
+        stack.push(newValue);
+    }
+
+    function peek() public returns (uint256) {
+        uint256 len = stack.length;
+        require(len > 0, "empty stack");
+        return stack[len - 1];
+    }
+
+    function pop() public returns (uint256) {
+        uint256 len = stack.length;
+        require(len > 0, "empty stack");
+        uint256 last = stack[len - 1];
+        stack.pop();
+        return last;
+    }
+
+    function size() public returns (uint256) {
+        return stack.length;
+    }
+
+    function getStack() public returns (uint256[] memory) {
+        return stack;
+    }
 }

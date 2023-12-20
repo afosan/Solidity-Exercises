@@ -7,5 +7,16 @@ contract FizzBuzz {
         // if n is divisible by 5, return "buzz"
         // if n is divisible be 3 and 5, return "fizz buzz"
         // otherwise, return an empty string
+        if (n % 15 == 0) {
+            return "fizz buzz";
+        } 
+        if (n % 3 == 0) {
+            return "fizz";
+        } 
+        if (n % 5 == 0) {
+            return "buzz";
+        }
+
+        return "";
     }
 }

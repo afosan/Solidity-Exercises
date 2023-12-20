@@ -4,6 +4,9 @@ pragma solidity ^0.8.13;
 contract TimelockEscrow {
     address public seller;
 
+    mapping(address => uint256) depositAmounts;
+    mapping(address => uint256) depositTimestamps;
+
     /**
      * The goal of this exercise is to create a Time lock escrow.
      * A buyer deposits ether into a contract, and the seller cannot withdraw it until 3 days passes. Before that, the buyer can take it back
@@ -21,6 +24,10 @@ contract TimelockEscrow {
      */
     function createBuyOrder() external payable {
         // your code here
+        require(depositAmounts[msg.sender] == 0, "existing escrow");
+
+        depositAmounts[msg.sender] = msg.value;
+        depositTimestamps[msg.sender] = block.timestamp;
     }
 
     /**
@@ -28,6 +35,14 @@ contract TimelockEscrow {
      */
     function sellerWithdraw(address buyer) external {
         // your code here
+        require(msg.sender == seller, "not seller");
+        require(depositTimestamps[buyer] + 3 days <= block.timestamp, "continuing escrow");
+
+        uint256 amount = depositAmounts[buyer];
+        depositAmounts[buyer] = 0;
+
+        (bool ok, ) = payable(seller).call{value: amount}("");
+        require(ok, "withdraw failed");
     }
 
     /**
@@ -35,10 +50,18 @@ contract TimelockEscrow {
      */
     function buyerWithdraw() external {
         // your code here
+        require(depositTimestamps[msg.sender] + 3 days > block.timestamp, "ended escrow");
+
+        uint256 amount = depositAmounts[msg.sender];
+        depositAmounts[msg.sender] = 0;
+
+        (bool ok, ) = payable(msg.sender).call{value: amount}("");
+        require(ok, "withdraw failed");
     }
 
     // returns the escrowed amount of @param buyer
     function buyerDeposit(address buyer) external view returns (uint256) {
         // your code here
+        return depositAmounts[buyer];
     }
 }
